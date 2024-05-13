@@ -13,6 +13,7 @@ import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useNavigate} from "react-router-dom"
 
 function Copyright(props) {
 
@@ -42,12 +43,14 @@ const [firstName,setFirstName]=React.useState("")
 const [lastName,setLastName]=React.useState("")
 const [email,setEmail]=React.useState("")
 const [password,setPassword]=React.useState("")
+const navigate=useNavigate()
 console.log(firstName)
 console.log(lastName,email,password)
 
 
 const sendUserDetails=()=>{
     const details1= axios.post("http://localhost:5000/api/signup",{FirstName:firstName,LastName:lastName,Email:email,Password:password})
+    navigate('/signin')
 }
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -57,9 +60,9 @@ const sendUserDetails=()=>{
       password: data.get('password'),
     });
   };
-  React.useEffect(()=>{
-sendUserDetails()
-  },[firstName,lastName,email,password])
+//   React.useEffect(()=>{
+// sendUserDetails()
+//   },[])
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -123,7 +126,7 @@ sendUserDetails()
                   label="Password"
                   type="password"
                   id="password"
-                  autoComplete="new-password"
+                  
                   onChange={(e)=>setPassword(e.target.value)}
                 />
               </Grid>
@@ -139,6 +142,7 @@ sendUserDetails()
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={sendUserDetails}
             >
               Sign Up
             </Button>

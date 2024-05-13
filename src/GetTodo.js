@@ -1,9 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function TodoList({key1}) {
   const [todos, setTodos] = useState([]);
   const [input,setInput]=useState("")
+  const [input1, setInput1] = useState('');
+  const [button,setButton]=useState(true)
+
+ 
+
+
+  const handleSubmit = async () => {
+    try {
+      await axios.post('http://localhost:5000/api/todo', { text: input1 });
+    //  await axios.post( "http://localhost:5000/api/newTodo",{text:input1})
+      setInput('');
+    
+    } catch (error) {
+      console.error('Error adding todo item:', error);
+    }
+    setButton(!button)
+  };
  
 
   useEffect(() => {
@@ -14,16 +32,8 @@ function TodoList({key1}) {
       .catch(error => {
         console.error('Error fetching todos:', error);
       });
-  }, []);
-  useEffect(()=>{
-    axios.get('http://localhost:5000/api/todo')
-    .then(response => {
-      setTodos(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching todos:', error);
-    });
-  },[key1])
+  }, [todos]);
+
 
  
   const delete1=(id)=>{
@@ -46,7 +56,7 @@ function TodoList({key1}) {
       return(
         setTodos(details=>details.map((item)=>{
           return(
-             item.id===id ? [...todos,input]:todos
+             item._id==id ? input:todos
           )
         }))
       )
@@ -68,14 +78,25 @@ function TodoList({key1}) {
     //     ))}
     //   </ul>
     // </div>
+    <>
+    <div>
+    <input
+      type="text"
+      value={input1}
+      onChange={(e) => setInput1(e.target.value)}
+      placeholder="Add a new todo"
+    />
+    <button onClick={handleSubmit}>Add</button>
+  </div>
     <div className="todo-list-container"> {/* Apply container class */}
     <h1 className="todo-list-header">Todo List</h1> {/* Apply header class */}
     <ul>
        {todos?.map(todo => (
-       <> <li className="todo-item" key={todo._id}>{todo.text}</li> <button onClick={()=>delete1(todo._id)} >Delete</button><input type='text' onChange={(e)=>update(todo._id,e.target.value)} /> </> 
+       <> <li className="todo-item" key={todo._id}>{todo.text}</li> <button onClick={()=>delete1(todo._id)} >Delete</button><input type='text'   onChange={(e)=>update(todo._id,e.target.value)} /> </> 
       ))} 
     </ul>
   </div>
+  </>
   );
 }
 

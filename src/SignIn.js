@@ -1,30 +1,35 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
-
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
         Your Website
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -34,30 +39,29 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     const data = new FormData(event.currentTarget);
-//     console.log({
-//       email: data.get('email'),
-//       password: data.get('password'),
-//     });
-//   };
-const [email,setEmail]=React.useState('')
-const [password,setPassword]=React.useState("")
-const handleSignIn = async (event) => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [id, setId] = React.useState();
+  const navigate = useNavigate();
+
+  const handleSignIn = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/signin", { Email:email,Password: password });
-      const { token } = response.data; 
-      localStorage.setItem('token', token);
-      const decoded = jwtDecode(token); 
+      const response = await axios.post("http://localhost:5000/api/signin", {
+        Email: email,
+        Password: password,
+      });
+      const { token } = response.data;
+      localStorage.setItem("token", token);
+      const decoded = jwtDecode(token);
       console.log("User signed in:", decoded);
-    
+
+      navigate("/addtodo");
+      await axios.post("http://localhost:5000/api/decoded", { id: decoded });
     } catch (error) {
       console.error("Sign-in failed:", error);
     }
   };
- 
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -66,18 +70,21 @@ const handleSignIn = async (event) => {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-         
-          </Avatar>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSignIn}  noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSignIn}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -87,7 +94,7 @@ const handleSignIn = async (event) => {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={(e)=>setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -98,7 +105,7 @@ const handleSignIn = async (event) => {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -109,7 +116,6 @@ const handleSignIn = async (event) => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-             
             >
               Sign In
             </Button>
