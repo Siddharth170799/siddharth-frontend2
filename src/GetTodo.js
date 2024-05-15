@@ -6,26 +6,37 @@ function TodoList({key1}) {
   const [todos, setTodos] = useState([]);
   const [input,setInput]=useState("")
   const [input1, setInput1] = useState('');
-  const [button,setButton]=useState(true)
+  // const [button,setButton]=useState(true)
 
  
 
 
   const handleSubmit = async () => {
+
     try {
-      await axios.post('http://localhost:5000/api/todo', { text: input1 });
+      let token= localStorage.getItem("token")
+      let headers={
+       "Authorization":`${token}`
+      }
+      await axios.post('https://node-backend-new-l72q.onrender.com/api/todo', { text: input1},{headers} );
+     
     //  await axios.post( "http://localhost:5000/api/newTodo",{text:input1})
       setInput('');
     
     } catch (error) {
       console.error('Error adding todo item:', error);
     }
-    setButton(!button)
+    // setButton(!button)
+   
   };
  
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/todo')
+    let token= localStorage.getItem("token")
+    let headers={
+     "Authorization":`${token}`
+    }
+    axios.get('https://node-backend-new-l72q.onrender.com/api/todo',{headers})
       .then(response => {
         setTodos(response.data);
       })
@@ -38,7 +49,7 @@ function TodoList({key1}) {
  
   const delete1=(id)=>{
 
-    axios.delete(`http://localhost:5000/api/todo/${id}`)
+    axios.delete(`https://node-backend-new-l72q.onrender.com/api/todo/${id}`)
     .then((res)=>{
       setTodos(prevTodos => prevTodos.filter(items => items._id !== id))
     })
@@ -51,7 +62,7 @@ function TodoList({key1}) {
   }
 
   const update=(id,input)=>{
-    axios.put(`http://localhost:5000/api/todo/${id}`,{text:input})
+    axios.put(`https://node-backend-new-l72q.onrender.com/api/todo/${id}`,{text:input})
     .then((res)=>{
       return(
         setTodos(details=>details.map((item)=>{
@@ -70,15 +81,7 @@ function TodoList({key1}) {
 
 
   return (
-    // <div>
-    //   <h1>Todo List</h1>
-    //   <ul>
-    //     {todos.map(todo => (
-    //       <li key={todo._id}>{todo.text}</li> 
-    //     ))}
-    //   </ul>
-    // </div>
-    <>
+  <>
     <div>
     <input
       type="text"

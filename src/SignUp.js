@@ -49,7 +49,7 @@ console.log(lastName,email,password)
 
 
 const sendUserDetails=()=>{
-    const details1= axios.post("http://localhost:5000/api/signup",{FirstName:firstName,LastName:lastName,Email:email,Password:password})
+    const details1= axios.post("https://node-backend-new-l72q.onrender.com/api/signup",{FirstName:firstName,LastName:lastName,Email:email,Password:password})
     navigate('/signin')
 }
   const handleSubmit = (event) => {
